@@ -1,0 +1,11 @@
+[package]
+name = "hello"
+version = "0.1.0"
+authors = ["Chip Black <chip@spideroak.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+json = "*"
