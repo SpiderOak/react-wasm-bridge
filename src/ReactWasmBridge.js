@@ -1,5 +1,33 @@
 import React from 'react';
 
+class Builder {
+    constructor(name) {
+	this.name  = name;
+	this.attrs = {};
+	this.children = [];
+    }
+
+    factory (name) {
+	return new Builder(name);
+    }
+
+    addChild ( child ) {
+	this.children.push(child);
+    }
+
+    addText ( text ) {
+	this.children.push(text);
+    }
+
+    setAttr( k, v ) {
+	this.attrs[k] = v;
+    }
+
+    finish ( ) {
+	return React.createElement(this.name, this.attrs, this.children);
+    }
+}
+
 export default class ReactWasmBridge extends React.PureComponent {
   componentWillMount() {
     const { module } = this.props;
@@ -7,8 +35,11 @@ export default class ReactWasmBridge extends React.PureComponent {
     this.moduleState = module.State.new();
   }
 
-  _transformTreeToReact(node) {
-    switch (node.type) {
+  _transformTreeToReact(fragment) {
+      console.log(fragment);
+      return fragment.hello();
+
+      switch (node.type) {
       case 'element':
         const reactChildren = node.children ?
           // Ugh
@@ -35,10 +66,13 @@ export default class ReactWasmBridge extends React.PureComponent {
       }
     }
 
-    const treeJSON = module.render(this.moduleState);
-    const tree = JSON.parse(treeJSON);
+      let builder = new Builder("dummy");
+      return module.render(this.moduleState, builder);
+      /*
+    const elem = module.render(this.moduleState);
 
-    return this._transformTreeToReact(tree);
+    return this._transformTreeToReact(elem);
+    */
   }
 
   render() {

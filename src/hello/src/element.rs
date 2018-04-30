@@ -1,17 +1,24 @@
-extern crate json;
+#![feature(proc_macro, wasm_custom_section, wasm_import_module, proc_macro_path_invoc)]
 
+extern crate wasm_bindgen;
+
+use wasm_bindgen::prelude::*;
 use std::collections::HashMap;
+use builder::*;
 
+    
 pub enum Node {
 	Text(String),
 	Element(Element),
 }
+
 
 pub struct Element {
 	name: String,
 	attributes: HashMap<String, String>,
 	children: Vec<Node>,
 }
+
 
 impl Element {
 	pub fn new(name: &str) -> Element {
@@ -30,29 +37,22 @@ impl Element {
 		self.children.push(child);
 	}
 
-	fn to_json_value(&self) -> json::JsonValue {
-		let mut json_attributes = json::JsonValue::new_object();
-		for (k, v) in &self.attributes {
-			json_attributes[k] = json::JsonValue::String(v.to_string());
-		}
+    
+    pub fn render(&self, factory: &Builder) -> JsValue {
 
-		json::object!{
-			"type" => "element",
-			"name" => self.name.clone(),
-			"attributes" => json_attributes,
-			"children" => self.children.iter().map(|n| { 
-				match n {
-					Node::Element(e) => e.to_json_value(),
-					Node::Text(t) => json::object!{
-						"type" => "text",
-						"text" => t.clone(),
-					}
-				}
-			}).collect::<Vec<json::JsonValue>>(),
-		}
+        let builder = factory.factory(self.name.clone());
+
+        for (k, v) in &self.attributes {
+	    builder.setAttr(k.to_string(),  v.to_string());
 	}
 
-	pub fn to_json(&mut self) -> String {
-		json::stringify(self.to_json_value())
-	}
+        for node in &self.children {
+            match node {
+		Node::Text(t) => builder.addText( t.clone() ),
+		Node::Element(e) => builder.addChild( e.render(factory) ),
+		}
+	    }
+    
+        builder.finish()
+    }
 }
