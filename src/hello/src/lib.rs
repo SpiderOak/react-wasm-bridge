@@ -1,12 +1,13 @@
-#![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+#![feature(proc_macro, wasm_custom_section, wasm_import_module, proc_macro_path_invoc)]
 
-mod element;
+mod builder;
 
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 use std::collections::HashMap;
-use element::*;
+
+pub use builder::*;
 
 pub enum PropValue {
 	S(String),
@@ -37,25 +38,34 @@ impl State {
 	}
 }
 
+
 #[wasm_bindgen]
-pub fn render(state: &State) -> String {
-	let x = *match state.props.get("x").unwrap() {
-		PropValue::N(x) => x,
-		_ => &0.0,
-	} as usize;
-	let message = match state.props.get("message").unwrap() {
-		PropValue::S(x) => x,
-		_ => "blonk",
-	};
+pub fn render(state: &State, factory: &Builder) -> JsValue {
+    let x = *match state.props.get("x").unwrap() {
+	PropValue::N(x) => x,
+	_ => &0.0,
+    } as usize;
 
-	let mut elem = Element::new("ul");
-	elem.attr_set("className", "output");
-	for k in 0..x {
-		let mut li = Element::new("li");
-		li.attr_set("key", &k.to_string());
-		li.child_add(Node::Text(message.to_string()));
-		elem.child_add(Node::Element(li));
-	}
+    let message = match state.props.get("message").unwrap() {
+	PropValue::S(x) => x,
+	_ => "blonk",
+    };
 
-	elem.to_json()
+    //let mut elem = Element::new("ul");
+    let elem = factory.factory("ul".to_string());
+    
+    elem.setAttr("className".to_string(), "output".to_string());
+
+    for k in 0..x {
+	//let mut li = Element::new("li");
+        let li = factory.factory("li".to_string());
+
+	li.setAttr("key".to_string(), k.to_string());
+
+	li.addText(message.to_string());
+
+	elem.addChild(li.finish());
+    }
+
+    elem.finish()
 }
