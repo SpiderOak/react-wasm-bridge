@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Builder {
+export class Builder {
     constructor(name) {
 	this.name  = name;
 	this.attrs = {};
