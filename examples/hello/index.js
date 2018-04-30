@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactWasmBridge from './ReactWasmBridge';
+import ReactWasmBridge from 'react-wasm-bridge';
 
 let helloModule;
 
@@ -34,7 +34,7 @@ class App extends React.PureComponent {
 }
 
 window.addEventListener('load', () => {
-  const hello = import('./hello/hello');
+  const hello = import('./hello');
   hello.then(m => {
     window.helloModule = helloModule = m;
     const content = document.getElementById('content');

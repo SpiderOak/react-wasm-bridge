@@ -2,12 +2,15 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './src/ReactWasmBridge.js',
+  entry: './index.js',
   output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'ReactWasmBridge',
-    libraryTarget: 'umd',
+    path: path.resolve(__dirname, 'dist')
+  },
+  resolve: {
+    alias: {
+      'react-wasm-bridge': path.resolve(__dirname, '../../')
+    }
   },
   module: {
     rules: [

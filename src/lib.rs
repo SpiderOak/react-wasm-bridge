@@ -36,36 +36,24 @@ impl State {
 	pub fn props_set_number(&mut self, k: &str, v: f64) {
 		self.props.insert(k.to_string(), PropValue::N(v));
 	}
-}
 
+	pub fn props_get_string(&self, k: &str) -> String {
+		match self.props.get(k) {
+			Some(p) => match p {
+				PropValue::S(v) => v.clone(),
+				_ => "".to_string(),
+			},
+			None => "".to_string(),
+		}
+	}
 
-#[wasm_bindgen]
-pub fn render(state: &State, factory: &Builder) -> JsValue {
-    let x = *match state.props.get("x").unwrap() {
-	PropValue::N(x) => x,
-	_ => &0.0,
-    } as usize;
-
-    let message = match state.props.get("message").unwrap() {
-	PropValue::S(x) => x,
-	_ => "blonk",
-    };
-
-    //let mut elem = Element::new("ul");
-    let elem = factory.factory("ul".to_string());
-    
-    elem.setAttr("className".to_string(), "output".to_string());
-
-    for k in 0..x {
-	//let mut li = Element::new("li");
-        let li = factory.factory("li".to_string());
-
-	li.setAttr("key".to_string(), k.to_string());
-
-	li.addText(message.to_string());
-
-	elem.addChild(li.finish());
-    }
-
-    elem.finish()
+	pub fn props_get_number(&self, k: &str) -> f64 {
+		match self.props.get(k) {
+			Some(p) => match p {
+				PropValue::N(v) => *v,
+				_ => 0.0,
+			},
+			None => 0.0,
+		}
+	}
 }
