@@ -3,8 +3,12 @@
 mod builder;
 
 extern crate wasm_bindgen;
+extern crate pulldown_cmark;
 
 use wasm_bindgen::prelude::*;
+use pulldown_cmark::Parser;
+use pulldown_cmark::Event;
+use pulldown_cmark::Tag;
 use std::collections::HashMap;
 
 pub use builder::*;
@@ -40,7 +44,7 @@ impl State {
 
 
 #[wasm_bindgen]
-pub fn render(state: &State, factory: &Builder) -> JsValue {
+pub fn render(state: &State, builder: &Builder) -> JsValue {
     let x = *match state.props.get("x").unwrap() {
 	PropValue::N(x) => x,
 	_ => &0.0,
@@ -51,21 +55,42 @@ pub fn render(state: &State, factory: &Builder) -> JsValue {
 	_ => "blonk",
     };
 
-    //let mut elem = Element::new("ul");
-    let elem = factory.factory("ul".to_string());
+    builder.newContext("ul".to_string());
     
-    elem.setAttr("className".to_string(), "output".to_string());
+    builder.setAttr("className".to_string(), "output".to_string());
 
     for k in 0..x {
-	//let mut li = Element::new("li");
-        let li = factory.factory("li".to_string());
+        builder.newContext("li".to_string());
 
-	li.setAttr("key".to_string(), k.to_string());
+	builder.setAttr("key".to_string(), k.to_string());
 
-	li.addText(message.to_string());
+        render_markdown( message, builder );
 
-	elem.addChild(li.finish());
+        builder.finishContext(); //li
     }
 
-    elem.finish()
+    builder.finishContext() //ul
+}
+
+fn render_markdown ( md: &str, builder: &Builder ) {
+    let parser = Parser::new(md);
+    
+    for event in parser {
+        match event {
+            Event::Text(text) => builder.addText(text.to_string()),
+            Event::Start(tag) => {
+                match tag {
+                    Tag::Emphasis => builder.newContext("b".to_string()),
+                    _ => ()
+                }
+            },
+            Event::End(tag) => {
+                match tag {
+                    Tag::Emphasis => {builder.finishContext();},
+                    _ => ()
+                }
+            }
+            _ => builder.addText("-MD-".to_string()),
+        }
+    }
 }

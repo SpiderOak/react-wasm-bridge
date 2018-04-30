@@ -10,11 +10,8 @@ extern {
     pub type Builder;
     
     #[wasm_bindgen(method)]
-    pub fn factory(this: &Builder, name: String) -> Builder;
+    pub fn newContext(this: &Builder, name: String);
     
-    #[wasm_bindgen(method)]
-    pub fn addChild(this: &Builder, child: JsValue);
-
     #[wasm_bindgen(method)]
     pub fn addText(this: &Builder, text: String);
 
@@ -22,5 +19,5 @@ extern {
     pub fn setAttr(this: &Builder, key: String, value: String);
 
     #[wasm_bindgen(method)]
-    pub fn finish(this: &Builder) -> JsValue;
+    pub fn finishContext(this: &Builder) -> JsValue;
 }
