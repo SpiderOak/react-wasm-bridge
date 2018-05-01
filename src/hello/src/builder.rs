@@ -10,13 +10,13 @@ extern {
     pub type Builder;
     
     #[wasm_bindgen(method)]
-    pub fn newContext(this: &Builder, name: String);
+    pub fn newContext(this: &Builder, name: &str);
     
     #[wasm_bindgen(method)]
-    pub fn addText(this: &Builder, text: String);
+    pub fn addText(this: &Builder, text: &str);
 
     #[wasm_bindgen(method)]
-    pub fn setAttr(this: &Builder, key: String, value: String);
+    pub fn setAttr(this: &Builder, key: &str, value: &str);
 
     #[wasm_bindgen(method)]
     pub fn finishContext(this: &Builder) -> JsValue;

@@ -112,11 +112,6 @@ export default class ReactWasmBridge extends React.PureComponent {
 
       let builder = new Builder("dummy");
       return module.render(this.moduleState, builder);
-      /*
-    const elem = module.render(this.moduleState);
-
-    return this._transformTreeToReact(elem);
-    */
   }
 
   render() {

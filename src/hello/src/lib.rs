@@ -55,14 +55,14 @@ pub fn render(state: &State, builder: &Builder) -> JsValue {
 	_ => "blonk",
     };
 
-    builder.newContext("ul".to_string());
+    builder.newContext("ul");
     
-    builder.setAttr("className".to_string(), "output".to_string());
+    builder.setAttr("className", "output");
 
     for k in 0..x {
-        builder.newContext("li".to_string());
+        builder.newContext("li");
 
-	builder.setAttr("key".to_string(), k.to_string());
+	builder.setAttr("key", &k.to_string());
 
         render_markdown( message, builder );
 
@@ -77,18 +77,18 @@ fn render_markdown ( md: &str, builder: &Builder ) {
     
     for event in parser {
         match event {
-            Event::Text(text) => builder.addText(text.to_string()),
+            Event::Text(text) => builder.addText(&text.clone()),
             Event::Start(tag) => {
                 match tag {
-                    Tag::Paragraph => builder.newContext("p".to_string()),
-                    Tag::Rule => builder.newContext("hr".to_string()),
-                    Tag::Header(level) => builder.newContext(format!("h{}",level).to_string()),
+                    Tag::Paragraph => builder.newContext("p"),
+                    Tag::Rule => builder.newContext("hr"),
+                    Tag::Header(level) => builder.newContext(&format!("h{}",level)),
 
-                    Tag::BlockQuote => builder.newContext("blockquote".to_string()),
+                    Tag::BlockQuote => builder.newContext("blockquote"),
                     Tag::CodeBlock(code) => {
-                        builder.newContext("pre".to_string());
-                        builder.newContext("code".to_string());
-                        builder.addText(code.to_string());
+                        builder.newContext("pre");
+                        builder.newContext("code");
+                        builder.addText(&code.clone());
                     },
 
                     // A list. If the list is ordered the field
@@ -96,40 +96,39 @@ fn render_markdown ( md: &str, builder: &Builder ) {
                     Tag::List(index)=> {
                         match index {
                             Some(start) =>  {
-                                builder.newContext("ol".to_string());
-                                builder.setAttr("start".to_string(), start.to_string());
+                                builder.newContext("ol");
+                                builder.setAttr("start", &start.to_string());
                             }
-                            None =>  builder.newContext("ul".to_string()),
+                            None =>  builder.newContext("ul"),
                         }
                     },
-                    Tag::Item => builder.newContext("li".to_string()),
+                    Tag::Item => builder.newContext("li"),
                     Tag::FootnoteDefinition(footer) => {
-                        builder.newContext("footer".to_string());
-                        builder.addText(footer.to_string());
+                        builder.newContext("footer");
+                        builder.addText(&footer.clone());
                     },
 
-                    // tables
-                    // BUG: handle alignment on table
-                    Tag::Table(_) => builder.newContext("table".to_string()),
-                    Tag::TableHead => builder.newContext("th".to_string()),
-                    Tag::TableRow => builder.newContext("tr".to_string()),
-                    Tag::TableCell => builder.newContext("td".to_string()),
+                    // BUG: Alingment not implmented
+                    Tag::Table(_) => builder.newContext("table"),
+                    Tag::TableHead => builder.newContext("th"),
+                    Tag::TableRow => builder.newContext("tr"),
+                    Tag::TableCell => builder.newContext("td"),
 
                     // span-level tags
-                    Tag::Emphasis => builder.newContext("em".to_string()),
-                    Tag::Strong => builder.newContext("strong".to_string()),
-                    Tag::Code => builder.newContext("code".to_string()),
+                    Tag::Emphasis => builder.newContext("em"),
+                    Tag::Strong => builder.newContext("strong"),
+                    Tag::Code => builder.newContext("code"),
 
                     Tag::Link(url, title) => {
-                        builder.newContext("a".to_string());
-                        builder.setAttr("href".to_string(), url.to_string());
-                        builder.setAttr("title".to_string(), title.to_string());
+                        builder.newContext("a");
+                        builder.setAttr("href", &url.clone());
+                        builder.setAttr("title", &title.clone());
                     },
 
                     Tag::Image(url, title) => {
-                        builder.newContext("img".to_string());
-                        builder.setAttr("href".to_string(), url.to_string());
-                        builder.setAttr("title".to_string(), title.to_string());
+                        builder.newContext("img");
+                        builder.setAttr("href", &url.clone());
+                        builder.setAttr("title", &title.clone());
                     },
                 }
             },
@@ -142,16 +141,16 @@ fn render_markdown ( md: &str, builder: &Builder ) {
                     _ => {builder.finishContext();},
                 }
             }
-            Event::Html(text) => builder.addText(text.to_string()),
-            Event::InlineHtml(text) => builder.addText(text.to_string()),
-            Event::FootnoteReference(text) => builder.addText(text.to_string()),
+            Event::Html(text) => builder.addText(&text.clone()),
+            Event::InlineHtml(text) => builder.addText(&text.clone()),
+            Event::FootnoteReference(text) => builder.addText(&text.clone()),
             Event::SoftBreak => {
-                builder.newContext("br".to_string());
+                builder.newContext("br");
                 builder.finishContext();
                 
             },
             Event::HardBreak => {
-                builder.newContext("br".to_string());
+                builder.newContext("br");
                 builder.finishContext();
                 
             },
