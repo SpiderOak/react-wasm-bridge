@@ -109,6 +109,7 @@ fn render_markdown ( md: &str, builder: &Builder ) {
                     },
 
                     // tables
+                    // BUG: handle alignment on table
                     Tag::Table(_) => builder.newContext("table".to_string()),
                     Tag::TableHead => builder.newContext("th".to_string()),
                     Tag::TableRow => builder.newContext("tr".to_string()),
