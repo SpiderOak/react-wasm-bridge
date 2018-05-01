@@ -80,17 +80,80 @@ fn render_markdown ( md: &str, builder: &Builder ) {
             Event::Text(text) => builder.addText(text.to_string()),
             Event::Start(tag) => {
                 match tag {
-                    Tag::Emphasis => builder.newContext("b".to_string()),
-                    _ => ()
+                    Tag::Paragraph => builder.newContext("p".to_string()),
+                    Tag::Rule => builder.newContext("hr".to_string()),
+                    Tag::Header(level) => builder.newContext(format!("h{}",level).to_string()),
+
+                    Tag::BlockQuote => builder.newContext("blockquote".to_string()),
+                    Tag::CodeBlock(code) => {
+                        builder.newContext("pre".to_string());
+                        builder.newContext("code".to_string());
+                        builder.addText(code.to_string());
+                    },
+
+                    // A list. If the list is ordered the field
+                    // indicates the number of the first item.
+                    Tag::List(index)=> {
+                        match index {
+                            Some(start) =>  {
+                                builder.newContext("ol".to_string());
+                                builder.setAttr("start".to_string(), start.to_string());
+                            }
+                            None =>  builder.newContext("ul".to_string()),
+                        }
+                    },
+                    Tag::Item => builder.newContext("li".to_string()),
+                    Tag::FootnoteDefinition(footer) => {
+                        builder.newContext("footer".to_string());
+                        builder.addText(footer.to_string());
+                    },
+
+                    // tables
+                    Tag::Table(_) => builder.newContext("table".to_string()),
+                    Tag::TableHead => builder.newContext("th".to_string()),
+                    Tag::TableRow => builder.newContext("tr".to_string()),
+                    Tag::TableCell => builder.newContext("td".to_string()),
+
+                    // span-level tags
+                    Tag::Emphasis => builder.newContext("em".to_string()),
+                    Tag::Strong => builder.newContext("strong".to_string()),
+                    Tag::Code => builder.newContext("code".to_string()),
+
+                    Tag::Link(url, title) => {
+                        builder.newContext("a".to_string());
+                        builder.setAttr("href".to_string(), url.to_string());
+                        builder.setAttr("title".to_string(), title.to_string());
+                    },
+
+                    Tag::Image(url, title) => {
+                        builder.newContext("img".to_string());
+                        builder.setAttr("href".to_string(), url.to_string());
+                        builder.setAttr("title".to_string(), title.to_string());
+                    },
                 }
             },
             Event::End(tag) => {
                 match tag {
-                    Tag::Emphasis => {builder.finishContext();},
-                    _ => ()
+                    Tag::CodeBlock(_) => {
+                        builder.finishContext();
+                        builder.finishContext();
+                    },
+                    _ => {builder.finishContext();},
                 }
             }
-            _ => builder.addText("-MD-".to_string()),
+            Event::Html(text) => builder.addText(text.to_string()),
+            Event::InlineHtml(text) => builder.addText(text.to_string()),
+            Event::FootnoteReference(text) => builder.addText(text.to_string()),
+            Event::SoftBreak => {
+                builder.newContext("br".to_string());
+                builder.finishContext();
+                
+            },
+            Event::HardBreak => {
+                builder.newContext("br".to_string());
+                builder.finishContext();
+                
+            },
         }
     }
 }
