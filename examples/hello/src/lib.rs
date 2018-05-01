@@ -1,59 +1,21 @@
 #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-mod builder;
-
 extern crate wasm_bindgen;
+extern crate react_wasm_bridge;
 extern crate pulldown_cmark;
 
-use wasm_bindgen::prelude::*;
 use pulldown_cmark::Parser;
 use pulldown_cmark::Event;
 use pulldown_cmark::Tag;
-use std::collections::HashMap;
 
-pub use builder::*;
-
-pub enum PropValue {
-	S(String),
-	N(f64),
-}
-
-#[wasm_bindgen]
-pub struct State {
-	props: HashMap<String, PropValue>,
-}
-
-#[wasm_bindgen]
-impl State {
-	pub fn new() -> State {
-		State { props: HashMap::new() }
-	}
-
-	pub fn props_clear(&mut self) {
-		self.props.clear();
-	}
-
-	pub fn props_set_string(&mut self, k: &str, v: &str) {
-		self.props.insert(k.to_string(), PropValue::S(v.to_string()));
-	}
-
-	pub fn props_set_number(&mut self, k: &str, v: f64) {
-		self.props.insert(k.to_string(), PropValue::N(v));
-	}
-}
-
+use wasm_bindgen::prelude::*;
+use react_wasm_bridge::{ State, Builder };
 
 #[wasm_bindgen]
 pub fn render(state: &State, builder: &Builder) -> JsValue {
-    let x = *match state.props.get("x").unwrap() {
-	PropValue::N(x) => x,
-	_ => &0.0,
-    } as usize;
 
-    let message = match state.props.get("message").unwrap() {
-	PropValue::S(x) => x,
-	_ => "blonk",
-    };
+    let x = state.props_get_number("x") as usize;
+    let message = state.props_get_string("message");
 
     builder.newContext("ul");
     
@@ -64,7 +26,7 @@ pub fn render(state: &State, builder: &Builder) -> JsValue {
 
 	builder.setAttr("key", &k.to_string());
 
-        render_markdown( message, builder );
+        render_markdown( &message, builder );
 
         builder.finishContext(); //li
     }
