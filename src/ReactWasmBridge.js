@@ -20,7 +20,11 @@ class Context {
     }
 
     finish ( ) {
-	return React.createElement(this.name, this.attrs, this.children);
+
+	if ( this.children.length > 0 )
+	    return React.createElement(this.name, this.attrs, this.children);
+	else
+	    return React.createElement(this.name, this.attrs);	   
     }
 }
 

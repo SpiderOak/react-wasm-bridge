@@ -26,7 +26,7 @@ class App extends React.PureComponent {
     return (
       <div>
         <p>Number: <input type="number" defaultValue={ number } ref={ this._updateNumberRef } onChange={ this.update } /></p>
-        <p>Message: <input type="text" defaultValue={ message } ref={ this._updateMessageRef } onChange={ this.update } /></p>
+        <p>Message: <textarea defaultValue={ message } ref={ this._updateMessageRef } onChange={ this.update } /></p>
         <div>Output: <ReactWasmBridge module={ helloModule } x={ number } message={ message } /></div>
       </div>
     );
