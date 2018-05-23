@@ -18,7 +18,7 @@ pub fn render(state: &State, builder: &Builder) -> JsValue {
     let message = state.props_get_string("message");
 
     builder.newContext("ul");
-    
+
     builder.setAttr("className", "output");
 
     for k in 0..x {
@@ -36,7 +36,7 @@ pub fn render(state: &State, builder: &Builder) -> JsValue {
 
 fn render_markdown ( md: &str, builder: &Builder ) {
     let parser = Parser::new(md);
-    
+
     for event in parser {
         match event {
             Event::Text(text) => builder.addText(&text.clone()),
@@ -109,12 +109,12 @@ fn render_markdown ( md: &str, builder: &Builder ) {
             Event::SoftBreak => {
                 builder.newContext("br");
                 builder.finishContext();
-                
+
             },
             Event::HardBreak => {
                 builder.newContext("br");
                 builder.finishContext();
-                
+
             },
         }
     }

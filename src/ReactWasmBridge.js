@@ -24,7 +24,7 @@ class Context {
 	if ( this.children.length > 0 )
 	    return React.createElement(this.name, this.attrs, this.children);
 	else
-	    return React.createElement(this.name, this.attrs);	   
+	    return React.createElement(this.name, this.attrs);
     }
 }
 
@@ -56,7 +56,7 @@ export class Builder {
 	    console.error("attempt to finish undefined context!");
 	    return undefined;
 	}
-	
+
 	let ret = this.context.finish();
 
 	if (this.stack.length === 0) {
