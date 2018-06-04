@@ -1,14 +1,10 @@
 import React from 'react';
 
-export class Builder {
+class Context {
     constructor(name) {
 	this.name  = name;
 	this.attrs = {};
 	this.children = [];
-    }
-
-    factory (name) {
-	return new Builder(name);
     }
 
     addChild ( child ) {
@@ -24,7 +20,55 @@ export class Builder {
     }
 
     finish ( ) {
-	return React.createElement(this.name, this.attrs, this.children);
+
+	if ( this.children.length > 0 )
+	    return React.createElement(this.name, this.attrs, this.children);
+	else
+	    return React.createElement(this.name, this.attrs);
+    }
+}
+
+export class Builder {
+    constructor(name) {
+	this.context = new Context(name);
+	this.stack = [];
+    }
+
+    newContext (name) {
+	this.stack.push(this.context);
+	this.context = new Context(name);
+    }
+
+    addChild ( child ) {
+	this.context.addChild(child);
+    }
+
+    addText ( text ) {
+	this.context.addText(text);
+    }
+
+    setAttr( k, v ) {
+	this.context.setAttr(k,v);
+    }
+
+    finishContext ( ) {
+	if (this.context === undefined ) {
+	    console.error("attempt to finish undefined context!");
+	    return undefined;
+	}
+
+	let ret = this.context.finish();
+
+	if (this.stack.length === 0) {
+	    //this.context = undefined;
+	}
+
+	else {
+	    this.context = this.stack.pop();
+	    this.context.addChild(ret);
+	}
+
+	return ret;
     }
 }
 
@@ -68,11 +112,6 @@ export default class ReactWasmBridge extends React.PureComponent {
 
       let builder = new Builder("dummy");
       return module.render(this.moduleState, builder);
-      /*
-    const elem = module.render(this.moduleState);
-
-    return this._transformTreeToReact(elem);
-    */
   }
 
   render() {

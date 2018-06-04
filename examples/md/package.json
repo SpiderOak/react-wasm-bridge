@@ -1,5 +1,5 @@
 {
-  "name": "hello",
+  "name": "md",
   "version": "0.1.0",
   "description": "Hello Demo",
   "private": true,
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "./index.js",
-  "author": "Chip Black <chip@spideroak.com>",
+  "author": "Jonathan Moore <jmoore@spideroak-inc.com>",
   "license": "MIT",
   "dependencies": {
     "react": "^16.3.2",

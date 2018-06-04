@@ -1,12 +1,13 @@
 [package]
-name = "hello"
+name = "md"
 version = "0.1.0"
-authors = ["Chip Black <chip@spideroak.com>"]
+authors = ["Jonathan Moore<jmoore@spideroak-inc.com>"]
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
+pulldown-cmark = { version = "0.1.2", default-features = false }
 react-wasm-bridge = "*"
 wasm-bindgen = "0.2"
 
