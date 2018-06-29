@@ -1,4 +1,6 @@
-*.js
-*.d.ts
-*.wasm
+hello.d.ts
+hello.js
+hello_bg.wasm
 target/
+dist/
+!dist/index.html

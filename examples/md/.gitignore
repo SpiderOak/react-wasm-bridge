@@ -1,0 +1,6 @@
+md.d.ts
+md.js
+md_bg.wasm
+target/
+dist/
+!dist/index.html
