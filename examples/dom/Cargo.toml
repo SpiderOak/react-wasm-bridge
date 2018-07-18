@@ -1,0 +1,14 @@
+[package]
+name = "dom"
+version = "0.1.0"
+authors = ["Chip Black <chip@spideroak.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+react-wasm-bridge = "*"
+wasm-bindgen = "0.2"
+
+[patch.crates-io]
+react-wasm-bridge = { path = "../../" }

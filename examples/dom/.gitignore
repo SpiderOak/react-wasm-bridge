@@ -1,0 +1,6 @@
+dom.d.ts
+dom.js
+dom_bg.wasm
+target/
+dist/
+!dist/index.html
