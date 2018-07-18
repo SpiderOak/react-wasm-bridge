@@ -19,5 +19,8 @@ extern {
     pub fn setAttr(this: &Builder, key: &str, value: &str);
 
     #[wasm_bindgen(method)]
+    pub fn setNS(this: &Builder, value: &str);
+
+    #[wasm_bindgen(method)]
     pub fn finishContext(this: &Builder) -> JsValue;
 }
