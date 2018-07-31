@@ -3,4 +3,3 @@ hello.js
 hello_bg.wasm
 target/
 dist/
-!dist/index.html
