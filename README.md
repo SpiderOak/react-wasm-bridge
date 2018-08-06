@@ -42,7 +42,6 @@ things:
 - yarn
 - rust nightly
 - wasm-bindgen
-- Firefox
 
 and run `make`.  The transpiled version will be output into `dist/`.
 
