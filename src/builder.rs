@@ -3,7 +3,7 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 
-#[wasm_bindgen(module = "react-wasm-bridge", version="0.1.0")]
+#[wasm_bindgen(module = "react-wasm-bridge")]
 extern {
     pub type Builder;
     

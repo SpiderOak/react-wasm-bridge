@@ -1,13 +1,9 @@
-#![feature(use_extern_macros)]
-
 mod builder;
-
-extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 use std::collections::HashMap;
 
-pub use builder::*;
+pub use crate::builder::*;
 
 pub enum PropValue {
 	S(String),
